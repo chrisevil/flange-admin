@@ -1,0 +1,84 @@
+{
+  "system_view": [
+    {
+      "system_name": "研发系统",
+      "total_employees": 50,
+      "overtime_distribution": [
+        {
+          "interval": "小于1小时",
+          "count": 10,
+          "percentage": 20
+        },
+        {
+          "interval": "1-2小时",
+          "count": 20,
+          "percentage": 40
+        },
+        {
+          "interval": "2-3小时",
+          "count": 15,
+          "percentage": 30
+        },
+        {
+          "interval": "大于3小时",
+          "count": 5,
+          "percentage": 10
+        }
+      ],
+      "employees": [
+        {
+          "name": "张三",
+          "department": "研发部",
+          "overtime_hours": 1.5,
+          "overtime_interval": "1-2小时"
+        },
+        {
+          "name": "李四",
+          "department": "研发部",
+          "overtime_hours": 3.2,
+          "overtime_interval": "大于3小时"
+        }
+      ]
+    },
+    {
+      "system_name": "运营系统",
+      "total_employees": 35,
+      "overtime_distribution": [
+        {
+          "interval": "小于1小时",
+          "count": 15,
+          "percentage": 42.86
+        },
+        {
+          "interval": "1-2小时",
+          "count": 10,
+          "percentage": 28.57
+        },
+        {
+          "interval": "2-3小时",
+          "count": 8,
+          "percentage": 22.86
+        },
+        {
+          "interval": "大于3小时",
+          "count": 2,
+          "percentage": 5.71
+        }
+      ],
+      "employees": [
+        {
+          "name": "王五",
+          "department": "运营部",
+          "overtime_hours": 0.5,
+          "overtime_interval": "小于1小时"
+        },
+        {
+          "name": "赵六",
+          "department": "运营部",
+          "overtime_hours": 2.5,
+          "overtime_interval": "2-3小时"
+        }
+      ]
+    }
+  ]
+}

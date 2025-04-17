@@ -501,6 +501,11 @@ function SplitAtomDemo() {
   const [todoAtoms] = useAtom(todoAtomsAtom);
   const [todos, setTodos] = useAtom(todosAtom);
 
+  // 为每个todoAtom单独调用useAtom，确保在组件顶层调用Hooks
+  const todoValues = todoAtoms.map((todoAtom) => useAtom(todoAtom)[0]);
+  // 为每个todoAtom创建对应的setter函数
+  const todoSetters = todoAtoms.map((todoAtom) => useAtom(todoAtom)[1]);
+
   const addTodo = () => {
     const text = prompt("输入新的待办事项");
     if (text) {
@@ -526,7 +531,6 @@ function SplitAtomDemo() {
   const deleteTodo = (id: number) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
-
   return (
     <Card className="w-full">
       <CardHeader>
@@ -534,12 +538,13 @@ function SplitAtomDemo() {
         <CardDescription>使用splitAtom将数组拆分为独立的原子</CardDescription>
       </CardHeader>
       <CardContent>
+        {JSON.stringify(todoValues)}
+        {JSON.stringify(todoSetters)}
         <div className="space-y-4">
           <Button onClick={addTodo}>添加待办事项</Button>
 
           <div className="space-y-2">
-            {todoAtoms.map((todoAtom, index) => {
-              const [todo] = useAtom(todoAtom);
+            {todoValues.map((todo, index) => {
               return (
                 <div
                   key={todo.id}

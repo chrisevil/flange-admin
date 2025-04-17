@@ -1,0 +1,129 @@
+{
+  "editor": {
+    "type": "object",
+    "title": "家庭信息编辑",
+    "properties": {
+      "家庭": {
+        "type": "object",
+        "title": "家庭基本信息",
+        "properties": {
+          "空间": {
+            "type": "string",
+            "title": "房屋面积",
+            "format": "dimension",
+            "pattern": "^\\d+m²$",
+            "placeholder": "请输入面积，例如：100m²"
+          },
+          "描述": {
+            "type": "string",
+            "title": "家庭描述",
+            "format": "textarea",
+            "maxLength": 200
+          },
+          "地址": {
+            "type": "string",
+            "title": "家庭地址",
+            "format": "address"
+          },
+          "家具": {
+            "type": "array",
+            "title": "家具列表",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true,
+            "addable": true,
+            "removable": true
+          },
+          "卧室": {
+            "type": "object",
+            "title": "卧室信息",
+            "properties": {
+              "描述": {
+                "type": "string",
+                "title": "卧室描述",
+                "format": "textarea"
+              },
+              "家具": {
+                "type": "array",
+                "title": "卧室家具",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true,
+                "addable": true,
+                "removable": true
+              },
+              "客厅": {
+                "type": "object",
+                "title": "客厅信息",
+                "properties": {
+                  "书房": {
+                    "type": "object",
+                    "title": "书房信息",
+                    "properties": {
+                      "厨房": {
+                        "type": "object",
+                        "title": "厨房信息"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "厨房": {
+            "type": "object",
+            "title": "厨房信息",
+            "properties": {
+              "描述": {
+                "type": "string",
+                "title": "厨房描述",
+                "format": "textarea"
+              },
+              "家具": {
+                "type": "array",
+                "title": "厨房用具",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true,
+                "addable": true,
+                "removable": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "ui": {
+      "layout": "vertical",
+      "labelWidth": 120,
+      "style": {
+        "padding": "24px"
+      },
+      "collapseMode": "accordion"
+    }
+  },
+  "data": {
+    "家庭": {
+      "空间": "100m²",
+      "描述": "有一个家庭",
+      "地址": "北京市海淀区",
+      "家具": ["沙发", "电视", "冰箱"],
+      "卧室": {
+        "描述": "有一个卧室",
+        "家具": ["床", "衣柜", "餐桌"],
+        "客厅": {
+          "书房": {
+            "厨房": {}
+          }
+        }
+      },
+      "厨房": {
+        "描述": "有一个厨房",
+        "家具": ["碗", "锅", "炉子"]
+      }
+    }
+  }
+}
