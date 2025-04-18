@@ -50,7 +50,7 @@ export default function ListViewPage() {
       }
     }
 
-    void loadData();
+    loadData();
   }, []);
 
   const columns: ColumnDef<EmployeeData>[] = [
