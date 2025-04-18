@@ -42,9 +42,16 @@ type EmployeeData = ApiResponse["data"][number];
 /**
  * 从API获取原始数据
  */
-export async function fetchRawData(): Promise<ApiResponse> {
+export async function fetchRawData(
+  year: number,
+  month: number,
+): Promise<ApiResponse> {
   try {
-    const response = await fetch("http://192.168.7.202:13065/api/sql/1");
+    console.log(year,month);
+    const url = new URL(
+      `https://www.h1ec828e4.nyat.app:45893/api/sql/${year}/${month}`,
+    );
+    const response = await fetch(url.toString());
     if (!response.ok) {
       throw new Error(`API请求失败: ${response.status}`);
     }

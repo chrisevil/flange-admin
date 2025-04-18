@@ -44,7 +44,7 @@ type EmployeeData = ApiResponse["data"][number];
  */
 export async function fetchRawData(): Promise<ApiResponse> {
   try {
-    const response = await fetch("http://192.168.7.202:13065/api/sql/1");
+    const response = await fetch("https://www.h1ec828e4.nyat.app:45893/api/sql/1");
     if (!response.ok) {
       throw new Error(`API请求失败: ${response.status}`);
     }

@@ -34,7 +34,12 @@ export default function OvertimeDashboardPage() {
   const [activeTab, setActiveTab] = useState("overall");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number>(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    return currentMonth === 1 ? 12 : currentMonth - 1;
+  });
+
   // 状态管理
   const [statsData, setStatsData] = useState<any>(null);
   const [companyData, setCompanyData] = useState<any>(null);
@@ -53,9 +58,9 @@ export default function OvertimeDashboardPage() {
       setIsLoading(true);
       try {
         // 只调用一次API获取原始数据，然后在前端进行处理
-        const rawData = await fetchRawData();
+        const rawData = await fetchRawData(selectedYear, selectedMonth);
         const processedData = processAllData(rawData);
-        
+
         // 设置各个状态
         setStatsData(processedData.stats);
         setCompanyData(processedData.company);
@@ -95,7 +100,29 @@ export default function OvertimeDashboardPage() {
 
   return (
     <div className="container p-8">
-      <h1 className="mb-8 text-3xl font-bold">员工加班状况BI分析</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">员工加班状况BI分析</h1>
+        <div className="flex space-x-4">
+          <select
+            className="border rounded px-3 py-1"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+          >
+            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+              <option key={year} value={year}>{year}年</option>
+            ))}
+          </select>
+          <select
+            className="border rounded px-3 py-1"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+              <option key={month} value={month}>{month}月</option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex h-96 items-center justify-center">
