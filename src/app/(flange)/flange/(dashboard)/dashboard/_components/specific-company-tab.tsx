@@ -1,8 +1,25 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
 import { StatCard } from "~/components/dashboard/stat-card";
 import { RankList } from "~/components/dashboard/rank-list";
 import { Users, Clock, ChevronsUpDown, Check } from "lucide-react";
@@ -10,6 +27,7 @@ import { Users, Clock, ChevronsUpDown, Check } from "lucide-react";
 // import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { ChartRender } from "~/components/ui/chart/ChartRender"; // Import ChartRender
 import { type ChartConfig } from "~/components/ui/chart";
+import { MONTH_WORK_DAYS } from "../_libs/data-fetcher";
 
 // Define the custom label renderer
 const renderCustomBarLabel = ({ x, y, width, height, value }: any) => {
@@ -21,7 +39,14 @@ const renderCustomBarLabel = ({ x, y, width, height, value }: any) => {
 
   // Basic styling, can be customized further
   return (
-    <text x={xPos} y={yPos} fill="#666" textAnchor="start" dominantBaseline="middle" fontSize={12}>
+    <text
+      x={xPos}
+      y={yPos}
+      fill="#666"
+      textAnchor="start"
+      dominantBaseline="middle"
+      fontSize={12}
+    >
       {value}
     </text>
   );
@@ -41,12 +66,14 @@ export function SpecificCompanyTab({
   const [open, setOpen] = useState(false);
 
   // Prepare data and config for the first chart (Department Overtime)
-  const departmentOvertimeData = companyDataQuery.data
-    ?.find((company: any) => company.company === selectedCompany)?.departments
-    .sort((a: any, b: any) => b.overtimeHours - a.overtimeHours)
-    .slice(0, 10) || [];
+  const departmentOvertimeData =
+    companyDataQuery.data.data
+      ?.find((company: any) => company.company === selectedCompany)
+      ?.departments.sort((a: any, b: any) => b.overtimeHours - a.overtimeHours)
+      .slice(0, 10) || [];
 
-  const departmentOvertimeConfig: ChartConfig & Record<string, { visible: boolean }> = {
+  const departmentOvertimeConfig: ChartConfig &
+    Record<string, { visible: boolean }> = {
     weekdayOvertimeHours: {
       label: "工作日加班",
       color: "#4f46e5",
@@ -60,12 +87,14 @@ export function SpecificCompanyTab({
   };
 
   // Prepare data and config for the second chart (Department Hours Composition)
-  const departmentHoursData = companyDataQuery.data
-    ?.find((company: any) => company.company === selectedCompany)?.departments
-    .sort((a: any, b: any) => b.totalHours - a.totalHours)
-    .slice(0, 10) || [];
+  const departmentHoursData =
+    companyDataQuery.data.data
+      ?.find((company: any) => company.company === selectedCompany)
+      ?.departments.sort((a: any, b: any) => b.totalHours - a.totalHours)
+      .slice(0, 10) || [];
 
-  const departmentHoursConfig: ChartConfig & Record<string, { visible: boolean }> = {
+  const departmentHoursConfig: ChartConfig &
+    Record<string, { visible: boolean }> = {
     normalHours: {
       label: "正常工时",
       color: "#10b981",
@@ -77,7 +106,6 @@ export function SpecificCompanyTab({
       visible: true,
     },
   };
-
 
   return (
     <div className="space-y-6 pt-4">
@@ -98,7 +126,9 @@ export function SpecificCompanyTab({
                     className="w-full justify-between"
                   >
                     {selectedCompany
-                      ? companyDataQuery.data?.find((company: any) => company.company === selectedCompany)?.company
+                      ? companyDataQuery.data.data?.find(
+                          (company: any) => company.company === selectedCompany,
+                        )?.company
                       : "请选择公司..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -109,12 +139,16 @@ export function SpecificCompanyTab({
                     <CommandList>
                       <CommandEmpty>未找到公司</CommandEmpty>
                       <CommandGroup>
-                        {companyDataQuery.data?.map((company: any) => (
+                        {companyDataQuery.data.data?.map((company: any) => (
                           <CommandItem
                             key={company.company}
                             value={company.company}
                             onSelect={(currentValue) => {
-                              setSelectedCompany(currentValue === selectedCompany ? null : currentValue);
+                              setSelectedCompany(
+                                currentValue === selectedCompany
+                                  ? null
+                                  : currentValue,
+                              );
                               setOpen(false);
                             }}
                           >
@@ -137,8 +171,8 @@ export function SpecificCompanyTab({
       {selectedCompany ? (
         <div className="space-y-6">
           {/* 选中公司的详细信息 */}
-          <div className="grid gap-4 md:grid-cols-3">
-            {companyDataQuery.data
+          <div className="grid gap-4 md:grid-cols-4">
+            {companyDataQuery.data.data
               ?.filter((company: any) => company.company === selectedCompany)
               .map((company: any) => (
                 <React.Fragment key={company.company}>
@@ -153,13 +187,17 @@ export function SpecificCompanyTab({
                     icon={<Clock className="h-4 w-4" />}
                   />
                   <StatCard
-                    title="人均加班时长(小时)"
+                    title="人均月加班时长(小时)"
                     value={company.avgHours.toFixed(1)}
                     icon={<Clock className="h-4 w-4" />}
                   />
+                  <StatCard
+                    title="人均日加班时长(小时)"
+                    value={(company.avgHours / MONTH_WORK_DAYS).toFixed(1)}
+                    icon={<Clock className="h-4 w-4" />}
+                  />
                 </React.Fragment>
-              ))
-            }
+              ))}
           </div>
 
           {/* 公司部门加班情况 */}
@@ -203,8 +241,11 @@ export function SpecificCompanyTab({
           <div className="grid gap-6 md:grid-cols-3">
             <RankList
               title={`${selectedCompany}部门加班时长排名`}
-              data={companyDataQuery.data
-                ?.find((company: any) => company.company === selectedCompany)?.departments || []}
+              data={
+                companyDataQuery.data.data?.find(
+                  (company: any) => company.company === selectedCompany,
+                )?.departments || []
+              }
               valueKey="overtimeHours"
               labelKey="department"
               highColor="#ef4444"
@@ -212,8 +253,11 @@ export function SpecificCompanyTab({
             />
             <RankList
               title={`${selectedCompany}部门人均加班时长排名`}
-              data={companyDataQuery.data
-                ?.find((company: any) => company.company === selectedCompany)?.departments || []}
+              data={
+                companyDataQuery.data.data?.find(
+                  (company: any) => company.company === selectedCompany,
+                )?.departments || []
+              }
               valueKey="avgHours"
               labelKey="department"
               highColor="#ef4444"
@@ -221,8 +265,11 @@ export function SpecificCompanyTab({
             />
             <RankList
               title={`${selectedCompany}部门加班率排名`}
-              data={companyDataQuery.data
-                ?.find((company: any) => company.company === selectedCompany)?.departments || []}
+              data={
+                companyDataQuery.data.data?.find(
+                  (company: any) => company.company === selectedCompany,
+                )?.departments || []
+              }
               valueKey="overtimeRate"
               labelKey="department"
               highColor="#ef4444"
@@ -231,7 +278,9 @@ export function SpecificCompanyTab({
           </div>
         </div>
       ) : (
-        <div className="text-center text-muted-foreground">请先选择一个公司以查看详细数据。</div>
+        <div className="text-center text-muted-foreground">
+          请先选择一个公司以查看详细数据。
+        </div>
       )}
     </div>
   );

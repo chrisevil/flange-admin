@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/trpc/react";
 import React from "react";
+
+// 导入数据获取函数
+import {
+  fetchRawData,
+  processAllData
+} from "./_libs/data-fetcher";
 
 // 颜色方案
 const COLORS = [
@@ -28,76 +33,65 @@ import { SystemViewTab } from "./_components/system-view-tab"; // 导入新组�
 export default function OvertimeDashboardPage() {
   const [activeTab, setActiveTab] = useState("overall");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
-
-  // 模拟 d1.json 数据结构
-  const mockSystemViewData = {
-    system_view: [
-      {
-        system_name: "研发系统",
-        total_employees: 50,
-        overtime_distribution: [
-          { interval: "小于1小时", count: 10, percentage: 20 },
-          { interval: "1-2小时", count: 20, percentage: 40 },
-          { interval: "2-3小时", count: 15, percentage: 30 },
-          { interval: "大于3小时", count: 5, percentage: 10 },
-        ],
-        employees: [
-          { name: "张三", department: "研发部", overtime_hours: 1.5, overtime_interval: "1-2小时" },
-          { name: "李四", department: "研发部", overtime_hours: 3.2, overtime_interval: "大于3小时" },
-        ],
-      },
-      {
-        system_name: "运营系统",
-        total_employees: 35,
-        overtime_distribution: [
-          { interval: "小于1小时", count: 15, percentage: 42.86 },
-          { interval: "1-2小时", count: 10, percentage: 28.57 },
-          { interval: "2-3小时", count: 8, percentage: 22.86 },
-          { interval: "大于3小时", count: 2, percentage: 5.71 },
-        ],
-        employees: [
-          { name: "王五", department: "运营部", overtime_hours: 0.5, overtime_interval: "小于1小时" },
-          { name: "赵六", department: "运营部", overtime_hours: 2.5, overtime_interval: "2-3小时" },
-        ],
-      },
-    ],
-  };
-  // 注意：这里暂时使用模拟数据，实际应用中应替换为 API 调用
-  const systemViewDataQuery = { data: mockSystemViewData.system_view, isLoading: false }; // 模拟 tRPC 查询对象
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // 状态管理
+  const [statsData, setStatsData] = useState<any>(null);
+  const [companyData, setCompanyData] = useState<any>(null);
+  const [departmentData, setDepartmentData] = useState<any>(null);
+  const [leaderData, setLeaderData] = useState<any>(null);
+  const [trendData, setTrendData] = useState<any>(null);
+  const [attendanceData, setAttendanceData] = useState<any>(null);
+  const [businessTripData, setBusinessTripData] = useState<any>(null);
+  const [reasonData, setReasonData] = useState<any>(null);
+  const [systemViewData, setSystemViewData] = useState<any>(null);
+  const [unitCategoriesData, setUnitCategoriesData] = useState<any>(null);
 
   // 获取数据
-  const statsQuery = api.dashboard.getOvertimeStats.useQuery();
-  const companyDataQuery = api.dashboard.getCompanyOvertimeData.useQuery();
-  const departmentDataQuery = api.dashboard.getDepartmentOvertimeData.useQuery();
-  const leaderDataQuery = api.dashboard.getLeaderOvertimeData.useQuery();
-  const trendDataQuery = api.dashboard.getOvertimeTrendData.useQuery({ days: 30 });
-  const attendanceDataQuery = api.dashboard.getAttendanceData.useQuery();
-  const businessTripDataQuery = api.dashboard.getBusinessTripData.useQuery();
-  const reasonDataQuery = api.dashboard.getOvertimeReasonData.useQuery();
+  useEffect(() => {
+    async function fetchAllData() {
+      setIsLoading(true);
+      try {
+        // 只调用一次API获取原始数据，然后在前端进行处理
+        const rawData = await fetchRawData();
+        const processedData = processAllData(rawData);
+        
+        // 设置各个状态
+        setStatsData(processedData.stats);
+        setCompanyData(processedData.company);
+        setDepartmentData(processedData.department);
+        setLeaderData(processedData.leader);
+        setTrendData(processedData.trend);
+        setAttendanceData(processedData.attendance);
+        setBusinessTripData(processedData.businessTrip);
+        setReasonData(processedData.reason);
+        setSystemViewData(processedData.systemView);
+        setUnitCategoriesData(processedData.unitCategories);
 
-  // 打印数据
-  console.log('统计信息:', statsQuery.data);
-  console.log('公司数据:', companyDataQuery.data);
-  console.log('部门数据:', departmentDataQuery.data);
-  console.log('领导数据:', leaderDataQuery.data);
-  console.log('趋势数据:', trendDataQuery.data);
-  console.log('出勤数据:', attendanceDataQuery.data);
-  console.log('出差数据:', businessTripDataQuery.data);
-  console.log('加班原因数据:', reasonDataQuery.data);
-  console.log('系统视图数据:', systemViewDataQuery.data); // 打印模拟数据
+        // 打印数据
+        console.log('原始数据:', rawData);
+        console.log('处理后的数据:', processedData);
+      } catch (error) {
+        console.error('获取数据失败:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  // 加载状态
-  const isLoading = [
-    statsQuery,
-    companyDataQuery,
-    departmentDataQuery,
-    leaderDataQuery,
-    trendDataQuery,
-    attendanceDataQuery,
-    businessTripDataQuery,
-    reasonDataQuery,
-    // systemViewDataQuery // 暂时注释掉，因为我们用的是模拟数据
-  ].some(query => query.isLoading);
+    fetchAllData();
+  }, []);  // 空依赖数组，仅在组件挂载时执行一次
+
+  // 创建与tRPC查询对象兼容的数据结构
+  const statsQuery = { data: statsData, isLoading: false };
+  const companyDataQuery = { data: companyData, isLoading: false };
+  const departmentDataQuery = { data: departmentData, isLoading: false };
+  const leaderDataQuery = { data: leaderData, isLoading: false };
+  const trendDataQuery = { data: trendData, isLoading: false };
+  const attendanceDataQuery = { data: attendanceData, isLoading: false };
+  const businessTripDataQuery = { data: businessTripData, isLoading: false };
+  const reasonDataQuery = { data: reasonData, isLoading: false };
+  const systemViewDataQuery = { data: systemViewData, isLoading: false };
+  const unitCategoriesDataQuery = { data: unitCategoriesData, isLoading: false };
 
   return (
     <div className="container p-8">
@@ -131,10 +125,7 @@ export default function OvertimeDashboardPage() {
             {/* 整体概览标签内容 */}
             <TabsContent value="overall">
               <OverallTab
-                trendDataQuery={trendDataQuery}
-                reasonDataQuery={reasonDataQuery}
-                attendanceDataQuery={attendanceDataQuery}
-                businessTripDataQuery={businessTripDataQuery}
+                unitCategoriesDataQuery={unitCategoriesDataQuery}
                 COLORS={COLORS}
               />
             </TabsContent>

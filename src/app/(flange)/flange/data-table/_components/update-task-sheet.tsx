@@ -1,13 +1,13 @@
 "use client";
 
-import type { Task } from "@/db/schema";
+import type { Task } from "~/db/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "~/components/ui/button";
 import {
   Sheet,
   SheetClose,
@@ -16,7 +16,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "~/components/ui/sheet";
 
 import { updateTask } from "../_lib/actions";
 import { type UpdateTaskSchema, updateTaskSchema } from "../_lib/validations";

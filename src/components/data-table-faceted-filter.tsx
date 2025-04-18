@@ -1,11 +1,11 @@
 "use client";
 
-import type { Option } from "@/types/data-table";
+import type { Option } from "~/types/data-table";
 import type { Column } from "@tanstack/react-table";
 import { Check, PlusCircle, XCircle } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -14,14 +14,14 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "~/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+} from "~/components/ui/popover";
+import { Separator } from "~/components/ui/separator";
+import { cn } from "~/lib/utils";
 import * as React from "react";
 
 interface DataTableFacetedFilterProps<TData, TValue> {

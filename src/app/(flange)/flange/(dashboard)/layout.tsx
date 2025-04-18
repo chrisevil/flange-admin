@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { LayoutDashboard, BarChart2, Menu, X, Settings, User, LogOut, Settings2 } from "lucide-react";
+import { LayoutDashboard, BarChart2, Menu, X, Settings, User, LogOut, Settings2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const sidebarNavItems = [
   {
@@ -20,7 +20,7 @@ const sidebarNavItems = [
     icon: <BarChart2 className="h-5 w-5" />,
   },
   {
-    title: "系统设置",
+    title: "系统设置（暂未完成）",
     href: "/flange/setting",
     icon: <Settings2 className="h-5 w-5" />,
   },
@@ -32,6 +32,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -47,7 +48,7 @@ export default function DashboardLayout({
           <Menu className="h-6 w-6" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold">Flange Admin</h1>
+          <h1 className="text-xl font-bold">考勤分析月报</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon">
@@ -71,43 +72,65 @@ export default function DashboardLayout({
         {/* 侧边栏 */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-50 w-64 border-r bg-card p-6 shadow-lg transition-transform md:static md:translate-x-0",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            "fixed inset-y-0 left-0 z-50 border-r bg-card shadow-lg transition-all duration-300 md:static md:translate-x-0",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+            sidebarCollapsed ? "w-16 p-2" : "w-64 p-6"
           )}
         >
-          <div className="flex items-center justify-between md:hidden">
-            <h2 className="text-lg font-semibold">导航</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
+          <div className={cn("flex items-center justify-between", sidebarCollapsed ? "mb-4" : "")}>
+            {!sidebarCollapsed && <h2 className="text-lg font-semibold md:block">导航</h2>}
+            <div className="flex">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden md:flex"
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+              >
+                {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
 
-          <nav className="mt-8 flex flex-col gap-2">
+          <nav className={cn("flex flex-col gap-2", sidebarCollapsed ? "mt-0" : "mt-8")}>
             {sidebarNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  sidebarCollapsed ? "justify-center" : "gap-3",
                   pathname.includes(item.href)
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-muted"
                 )}
+                title={sidebarCollapsed ? item.title : ""}
               >
                 {item.icon}
-                {item.title}
+                {!sidebarCollapsed && item.title}
               </Link>
             ))}
           </nav>
 
           <div className="mt-auto pt-4">
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button 
+              variant="outline" 
+              className={cn(
+                "w-full", 
+                sidebarCollapsed ? "justify-center" : "justify-start gap-2"
+              )}
+              title={sidebarCollapsed ? "退出登录" : ""}
+            >
               <LogOut className="h-4 w-4" />
-              退出登录
+              {!sidebarCollapsed && "退出登录"}
             </Button>
           </div>
         </aside>

@@ -1,6 +1,6 @@
 "use client";
 
-import { type Task, tasks } from "@/db/schema";
+import { type Task, tasks } from "~/db/schema";
 import { SelectTrigger } from "@radix-ui/react-select";
 import type { Table } from "@tanstack/react-table";
 import { ArrowUp, CheckCircle2, Download, Trash2 } from "lucide-react";
@@ -11,15 +11,15 @@ import {
   DataTableActionBar,
   DataTableActionBarAction,
   DataTableActionBarSelection,
-} from "@/components/data-table-action-bar";
+} from "~/components/data-table-action-bar";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { exportTableToCSV } from "@/lib/export";
+} from "~/components/ui/select";
+import { Separator } from "~/components/ui/separator";
+import { exportTableToCSV } from "~/lib/export";
 import { deleteTasks, updateTasks } from "../_lib/actions";
 
 const actions = [

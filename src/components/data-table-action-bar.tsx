@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "~/components/ui/tooltip";
+import { cn } from "~/lib/utils";
 import type { Table } from "@tanstack/react-table";
 import { Loader, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
